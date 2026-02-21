@@ -31,4 +31,12 @@ const onProgress = (event) => {
                   select.addEventListener('input', (event) => {
                     modelViewerVariants.variantName = event.target.value === 'default' ? null : event.target.value;
                   });
+const modelViewerColor = document.querySelector("model-viewer#color");
+
+                  document.querySelector('#color-controls').addEventListener('click', (event) => {
+                    const colorString = event.target.dataset.color;
+                    const [material] = modelViewerColor.model.materials;
+                    material.pbrMetallicRoughness.setBaseColorFactor(colorString);
+                  });
+
 document.querySelector('model-viewer').addEventListener('progress', onProgress);
