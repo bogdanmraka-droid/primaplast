@@ -37,17 +37,7 @@ client.init(uid, {
             });
         });
     });
-});
-        api.addEventListener('viewerready', function() {
-          const newTextureUrl = "./photo2.jpg";
-          api.addTexture(newTextureUrl, function(err, textureId) {
-            if (err) {
-              console.error('Деталі помилки:', err); // Подивіться, що саме пише в err
-              return;
-            }
-            alert("OK");
-          });
-        });
+
     },
     error: function onError() {
         console.error('Помилка при ініціалізації Sketchfab API');
