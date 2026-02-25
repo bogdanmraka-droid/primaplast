@@ -20,24 +20,16 @@ function getBase64Texture(url, callback) {
 client.init(uid, {
     success: function onSuccess(api) {
         api.start();
-
-
         api.addEventListener('viewerready', function() {
-    const textureUrl = 'photo.jpg'; // шлях до вашого файлу
-    
-    getBase64Texture(textureUrl, function(base64Data) {
-        api.addTexture(base64Data, function(err, textureId) {
-            if (err) return console.error('Помилка API:', err);
-
-            api.getMaterialList(function(err, materials) {
-              console.log(materials);
-                const mat = materials.find(m => m.name === 'wood'); // Замініть на ваше ім'я
-                mat.channels.AlbedoPBR.texture = { uid: textureId };
-                api.setMaterial(mat);
-            });
+          const newTextureUrl = "./photo2.jpg";
+          api.addTexture(newTextureUrl, function(err, textureId) {
+            if (err) {
+              console.error('Деталі помилки:', err); // Подивіться, що саме пише в err
+              return;
+            }
+            alert("OK");
+          });
         });
-    });
-
     },
     error: function onError() {
         console.error('Помилка при ініціалізації Sketchfab API');
