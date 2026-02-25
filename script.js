@@ -1,42 +1,55 @@
-// Handles loading the events for <model-viewer>'s slotted progress bar
-const onProgress = (event) => {
-  const progressBar = event.target.querySelector('.progress-bar');
-  const updatingBar = event.target.querySelector('.update-bar');
-  updatingBar.style.width = `${event.detail.totalProgress * 100}%`;
-  if (event.detail.totalProgress === 1) {
-    progressBar.classList.add('hide');
-    event.target.removeEventListener('progress', onProgress);
-  } else {
-    progressBar.classList.remove('hide');
-  }
-};
-                  const modelViewerVariants = document.querySelector("model-viewer#shoe");
-                  const select = document.querySelector('#variant');
+const iframe = document.getElementById('api-frame');
+const uid = 'c408470f192341d883fbbbcdac73aff4';
+const client = new Sketchfab(iframe);
 
-                  modelViewerVariants.addEventListener('load', () => {
-                    const names = modelViewerVariants.availableVariants;
-                    for (const name of names) {
-                      const option = document.createElement('option');
-                      option.value = name;
-                      option.textContent = name;
-                      select.appendChild(option);
-                    }
-                    // Adds a default option.
-                    const option = document.createElement('option');
-                    option.value = 'default';
-                    option.textContent = 'Default';
-                    select.appendChild(option);
-                  });
+function getBase64Texture(url, callback) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        callback(canvas.toDataURL('image/jpeg'));
+    };
+    img.src = url;
+}
 
-                  select.addEventListener('input', (event) => {
-                    modelViewerVariants.variantName = event.target.value === 'default' ? null : event.target.value;
-                  });
-const modelViewerColor = document.querySelector("model-viewer#color");
 
-                  document.querySelector('#color-controls').addEventListener('click', (event) => {
-                    const colorString = event.target.dataset.color;
-                    const [material] = modelViewerColor.model.materials;
-                    material.pbrMetallicRoughness.setBaseColorFactor(colorString);
-                  });
+client.init(uid, {
+    success: function onSuccess(api) {
+        api.start();
 
-document.querySelector('model-viewer').addEventListener('progress', onProgress);
+
+        api.addEventListener('viewerready', function() {
+    const textureUrl = 'photo.jpg'; // шлях до вашого файлу
+    
+    getBase64Texture(textureUrl, function(base64Data) {
+        api.addTexture(base64Data, function(err, textureId) {
+            if (err) return console.error('Помилка API:', err);
+
+            api.getMaterialList(function(err, materials) {
+              console.log(materials);
+                const mat = materials.find(m => m.name === 'wood'); // Замініть на ваше ім'я
+                mat.channels.AlbedoPBR.texture = { uid: textureId };
+                api.setMaterial(mat);
+            });
+        });
+    });
+});
+        api.addEventListener('viewerready', function() {
+          const newTextureUrl = "./photo2.jpg";
+          api.addTexture(newTextureUrl, function(err, textureId) {
+            if (err) {
+              console.error('Деталі помилки:', err); // Подивіться, що саме пише в err
+              return;
+            }
+            alert("OK");
+          });
+        });
+    },
+    error: function onError() {
+        console.error('Помилка при ініціалізації Sketchfab API');
+    }
+});
