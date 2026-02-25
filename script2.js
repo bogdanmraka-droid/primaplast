@@ -6,7 +6,7 @@ client.init(uid, {
     success: function onSuccess(api) {
         api.start();
         api.addEventListener('viewerready', function() {
-          const newTextureUrl = window.location.origin + '/photo2.jpg';
+          const newTextureUrl = window.location.origin + '/primaplast/photo2.jpg';
           api.addTexture(newTextureUrl, function(err, textureId) {
             if (err) {
               console.error('Деталі помилки:', err); // Подивіться, що саме пише в err
